@@ -686,3 +686,14 @@ section[id], div[id], .docroi-anchor-target { scroll-margin-top: 100px; }
 .copy-prompt-button.copied span {
   color: #0f7a3a;
 }
+
+/* Footer credit: keep the public author name compact and readable. */
+.copyright a {
+  white-space: nowrap;
+}
+@media (max-width: 520px) {
+  .copyright {
+    font-size: .92rem;
+    line-height: 1.65;
+  }
+}

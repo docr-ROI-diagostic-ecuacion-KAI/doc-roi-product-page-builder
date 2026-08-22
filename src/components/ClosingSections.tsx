@@ -23,7 +23,8 @@ export function ClosingSections({ logoUrl }: { logoUrl: string }) {
         </div>
       </section>
 
-      <footer className="docroi-footer"><div><a href="https://el-botiquin-del-doc-roi.vercel.app/" target="_blank" rel="noreferrer"><img src={logoUrl} alt="DOC ROI" /></a><p><a href="https://doc-roi-executive.vercel.app/" target="_blank" rel="noreferrer">Consult with DOC ROI →</a></p><nav><a href="https://docroi.marketing/aviso-legal/" target="_blank" rel="noreferrer">Privacy Policy</a><span>|</span><a href="https://docroi.marketing/aviso-legal/" target="_blank" rel="noreferrer">Legal Notice</a><span>|</span><a href="https://docroi.marketing/aviso-legal/" target="_blank" rel="noreferrer">Intellectual Property</a></nav><p className="copyright">The intellectual property of the DOC ROI ecosystem belongs to <a href="https://docroi.marketing/ph-d-jorge-lucio/" target="_blank" rel="noreferrer">Ph. D. Jorge Lucio Sánchez Galán.</a></p></div></footer>
+      <footer className="docroi-footer"><div><a href="https://el-botiquin-del-doc-roi.vercel.app/" target="_blank" rel="noreferrer"><img src={logoUrl} alt="DOC ROI" /></a><p><a href="https://doc-roi-executive.vercel.app/" target="_blank" rel="noreferrer">Consult with DOC ROI →</a></p><nav><a href="https://docroi.marketing/aviso-legal/" target="_blank" rel="noreferrer">Privacy Policy</a><span>|</span><a href="https://docroi.marketing/aviso-legal/" target="_blank" rel="noreferrer">Legal Notice</a><span>|</span><a href="https://docroi.marketing/aviso-legal/" target="_blank" rel="noreferrer">Intellectual Property</a></nav><p className="copyright">The intellectual property of the DOC ROI ecosystem belongs to <a href="https://docroi.marketing/ph-d-jorge-lucio/" target="_blank" rel="noreferrer">Ph. D. Jorge Lucio.</a></p></div></footer>
     </>
   );
 }
+
