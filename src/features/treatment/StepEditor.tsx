@@ -1,148 +1,83 @@
-import { Upload } from "lucide-react";
+import { ArrowDown, ArrowUp, Plus, Trash2, Upload } from "lucide-react";
+import { deleteMediaBlob, saveMediaBlob } from "../../lib/mediaDb";
 import type { EvidenceStatus, MediaAsset, ProductTreatmentState, TreatmentStep } from "../../schemas/productState";
 
 interface StepEditorProps {
   state: ProductTreatmentState;
+  mediaUrls: Record<string, string>;
   step: TreatmentStep;
   updateSection: <Key extends keyof ProductTreatmentState>(section: Key, value: ProductTreatmentState[Key]) => void;
 }
 
-const fieldStatuses: EvidenceStatus[] = ["CONFIRMED", "DECISION", "HYPOTHESIS", "PENDING", "UNKNOWN"];
+const statuses: EvidenceStatus[] = ["CONFIRMED", "DECISION", "HYPOTHESIS", "SUPPLIER_EVIDENCE", "MARKET_EVIDENCE", "LEGAL_EVIDENCE", "PENDING", "UNKNOWN"];
 
-export function StepEditor({ state, step, updateSection }: StepEditorProps) {
+export function StepEditor({ state, mediaUrls, step, updateSection }: StepEditorProps) {
   if (step.id === "productPromise") {
-    return (
-      <div className="form-grid">
-        <Field label="Brand" value={state.brand.brand} onChange={(brand) => updateSection("brand", { ...state.brand, brand })} status={state.brand.brand ? "CONFIRMED" : "PENDING"} />
-        <Field label="Product name" value={state.product.productName} onChange={(productName) => updateSection("product", { ...state.product, productName })} status={state.product.productName ? "CONFIRMED" : "PENDING"} />
-        <Field label="Category" value={state.product.category} onChange={(category) => updateSection("product", { ...state.product, category })} status={state.product.category ? "CONFIRMED" : "PENDING"} />
-        <Field label="Short description" value={state.product.shortDescription} onChange={(shortDescription) => updateSection("product", { ...state.product, shortDescription })} multiline />
-        <Field label="Product promise" value={state.product.productPromise} onChange={(productPromise) => updateSection("product", { ...state.product, productPromise })} multiline status={state.product.productPromise ? "DECISION" : "PENDING"} />
-        <Field label="Primary use" value={state.product.primaryUse} onChange={(primaryUse) => updateSection("product", { ...state.product, primaryUse })} />
-        <Field label="Customer hypothesis" value={state.product.customerHypothesis} onChange={(customerHypothesis) => updateSection("product", { ...state.product, customerHypothesis })} multiline status="HYPOTHESIS" />
-        <Field label="Main features" value={state.product.mainFeatures} onChange={(mainFeatures) => updateSection("product", { ...state.product, mainFeatures })} multiline />
-      </div>
-    );
+    return <div className="form-grid"><Field label="Brand" value={state.brand.brand} onChange={(brand) => updateSection("brand", { ...state.brand, brand })} /><Field label="Product name" value={state.product.productName} onChange={(productName) => updateSection("product", { ...state.product, productName })} /><Field label="Category" value={state.product.category} onChange={(category) => updateSection("product", { ...state.product, category })} /><Field label="Subcategory" value={state.product.subcategory} onChange={(subcategory) => updateSection("product", { ...state.product, subcategory })} /><Field label="Short description" value={state.product.shortDescription} onChange={(shortDescription) => updateSection("product", { ...state.product, shortDescription })} multiline /><Field label="Product promise" value={state.product.productPromise} onChange={(productPromise) => updateSection("product", { ...state.product, productPromise })} multiline /><Field label="Primary use" value={state.product.primaryUse} onChange={(primaryUse) => updateSection("product", { ...state.product, primaryUse })} /><Field label="Main features" value={state.product.mainFeatures} onChange={(mainFeatures) => updateSection("product", { ...state.product, mainFeatures })} multiline /><Field label="Use cases" value={state.product.useCases} onChange={(useCases) => updateSection("product", { ...state.product, useCases })} multiline /><Field label="Customer hypothesis" value={state.product.customerHypothesis} onChange={(customerHypothesis) => updateSection("product", { ...state.product, customerHypothesis })} multiline /></div>;
   }
 
-  if (step.id === "identity") {
-    return (
-      <div className="form-grid">
-        <Field label="Product ID" value={state.identity.productId} onChange={(productId) => updateSection("identity", { ...state.identity, productId })} status={state.identity.productId === "PENDING" ? "PENDING" : undefined} />
-        <Field label="SKU" value={state.identity.sku} onChange={(sku) => updateSection("identity", { ...state.identity, sku })} status={state.identity.sku ? "CONFIRMED" : "PENDING"} />
-        <Field label="GTIN" value={state.identity.gtin} onChange={(gtin) => updateSection("identity", { ...state.identity, gtin })} status={state.identity.gtin === "PENDING" ? "PENDING" : state.identity.gtin === "UNKNOWN" ? "UNKNOWN" : "CONFIRMED"} />
-        <Field label="Edition" value={state.identity.edition} onChange={(edition) => updateSection("identity", { ...state.identity, edition })} />
-        <Field label="Origin country" value={state.identity.originCountry} onChange={(originCountry) => updateSection("identity", { ...state.identity, originCountry })} />
-        <Field label="Origin region" value={state.identity.originRegion} onChange={(originRegion) => updateSection("identity", { ...state.identity, originRegion })} />
-        <Field label="Format" value={state.identity.format} onChange={(format) => updateSection("identity", { ...state.identity, format })} />
-        <Field label="Capacity" value={state.identity.capacity} onChange={(capacity) => updateSection("identity", { ...state.identity, capacity })} />
-        <Field label="ABV" value={state.identity.abv} onChange={(abv) => updateSection("identity", { ...state.identity, abv })} />
-        <Field label="Variant" value={state.identity.variant} onChange={(variant) => updateSection("identity", { ...state.identity, variant })} />
-      </div>
-    );
+  if (step.id === "identityCatalogue") {
+    return <div className="form-grid"><Field label="Product ID" value={state.identity.productId} onChange={(productId) => updateSection("identity", { ...state.identity, productId })} /><Field label="SKU" value={state.identity.sku} onChange={(sku) => updateSection("identity", { ...state.identity, sku })} /><Field label="GTIN" value={state.identity.gtin} onChange={(gtin) => updateSection("identity", { ...state.identity, gtin })} /><Field label="Variant" value={state.identity.variant} onChange={(variant) => updateSection("identity", { ...state.identity, variant })} /><Field label="Edition" value={state.identity.edition} onChange={(edition) => updateSection("identity", { ...state.identity, edition })} /><Field label="Model" value={state.identity.model} onChange={(model) => updateSection("identity", { ...state.identity, model })} /><Field label="Origin country" value={state.identity.originCountry} onChange={(originCountry) => updateSection("identity", { ...state.identity, originCountry })} /><Field label="Origin region" value={state.identity.originRegion} onChange={(originRegion) => updateSection("identity", { ...state.identity, originRegion })} /><Field label="Agave / composition" value={state.identity.composition} onChange={(composition) => updateSection("identity", { ...state.identity, composition })} /><Field label="Format" value={state.identity.format} onChange={(format) => updateSection("identity", { ...state.identity, format })} /><Field label="Capacity" value={state.identity.capacity} onChange={(capacity) => updateSection("identity", { ...state.identity, capacity })} /><Field label="ABV / technical specs" value={state.identity.abv} onChange={(abv) => updateSection("identity", { ...state.identity, abv })} /><Field label="Lot / batch logic" value={state.identity.lotBatchLogic} onChange={(lotBatchLogic) => updateSection("identity", { ...state.identity, lotBatchLogic })} multiline /><Field label="Store" value={state.catalogue.store} onChange={(store) => updateSection("catalogue", { ...state.catalogue, store })} /><Field label="Breadcrumb" value={state.catalogue.breadcrumb} onChange={(breadcrumb) => updateSection("catalogue", { ...state.catalogue, breadcrumb })} /><Field label="Slug" value={state.catalogue.slug} onChange={(slug) => updateSection("catalogue", { ...state.catalogue, slug })} /><Field label="Canonical URL" value={state.catalogue.canonicalUrl} onChange={(canonicalUrl) => updateSection("catalogue", { ...state.catalogue, canonicalUrl })} /><Field label="Catalogue labels" value={state.catalogue.labels} onChange={(labels) => updateSection("catalogue", { ...state.catalogue, labels })} multiline /></div>;
   }
 
-  if (step.id === "media") {
-    return (
-      <div className="media-grid">
-        {state.media.map((asset, index) => (
-          <MediaSlot
-            key={asset.id}
-            asset={asset}
-            index={index}
-            onChange={(nextAsset) => updateSection("media", state.media.map((item) => (item.id === asset.id ? nextAsset : item)))}
-          />
-        ))}
-      </div>
-    );
+  if (step.id === "brandMedia") {
+    return <div className="stack"><div className="form-grid compact"><Field label="Brand logo URL" value={state.brand.assets.brandLogo} onChange={(brandLogo) => updateSection("brand", { ...state.brand, assets: { ...state.brand.assets, brandLogo } })} /><Field label="Label logo URL" value={state.brand.assets.labelLogo} onChange={(labelLogo) => updateSection("brand", { ...state.brand, assets: { ...state.brand.assets, labelLogo } })} /><Field label="Profile logo URL" value={state.brand.assets.profileLogo} onChange={(profileLogo) => updateSection("brand", { ...state.brand, assets: { ...state.brand.assets, profileLogo } })} /><Field label="PDP primary color" value={state.theme.primaryColor} onChange={(primaryColor) => updateSection("theme", { ...state.theme, primaryColor })} /></div><div className="media-grid">{state.media.sort((a, b) => a.order - b.order).map((asset) => <MediaSlot key={asset.id} asset={asset} allMedia={state.media} mediaUrl={mediaUrls[asset.id]} update={(media) => updateSection("media", media)} />)}</div></div>;
   }
 
-  if (step.id === "pricing") {
-    return (
-      <div className="form-grid compact">
-        <Field label="Currency" value={state.pricing.currency} onChange={(currency) => updateSection("pricing", { ...state.pricing, currency })} />
-        <NumberField label="Gross price" value={state.pricing.grossPrice} onChange={(grossPrice) => updateSection("pricing", { ...state.pricing, grossPrice })} />
-        <NumberField label="Tax rate" value={state.pricing.taxRate} onChange={(taxRate) => updateSection("pricing", { ...state.pricing, taxRate })} />
-        <NumberField label="Discount value" value={state.pricing.discountValue} onChange={(discountValue) => updateSection("pricing", { ...state.pricing, discountValue })} />
-      </div>
-    );
+  if (step.id === "benefitsTrust") {
+    return <div className="stack"><EditableList title="Feature → Benefit → Evidence" addLabel="Add benefit" onAdd={() => updateSection("benefits", [...state.benefits, { id: crypto.randomUUID(), feature: "", benefit: "", evidence: "PENDING" }])}>{state.benefits.map((item) => <div className="form-row-card" key={item.id}><Field label="Feature" value={item.feature} onChange={(feature) => updateSection("benefits", state.benefits.map((x) => x.id === item.id ? { ...x, feature } : x))} /><Field label="Benefit" value={item.benefit} onChange={(benefit) => updateSection("benefits", state.benefits.map((x) => x.id === item.id ? { ...x, benefit } : x))} /><Field label="Evidence" value={item.evidence} onChange={(evidence) => updateSection("benefits", state.benefits.map((x) => x.id === item.id ? { ...x, evidence } : x))} /><IconButton label="Delete" onClick={() => updateSection("benefits", state.benefits.filter((x) => x.id !== item.id))} icon={<Trash2 size={16} />} /></div>)}</EditableList><EditableList title="Claims and evidence" addLabel="Add claim" onAdd={() => updateSection("trust", [...state.trust, { id: crypto.randomUUID(), claim: "", owner: "PENDING", source: "PENDING", status: "PENDING", reviewDate: "PENDING", approvalStatus: "PENDING", market: "PENDING" }])}>{state.trust.map((claim) => <div className="form-row-card wide" key={claim.id}><Field label="Claim" value={claim.claim} onChange={(value) => updateSection("trust", state.trust.map((x) => x.id === claim.id ? { ...x, claim: value } : x))} /><Field label="Source" value={claim.source} onChange={(source) => updateSection("trust", state.trust.map((x) => x.id === claim.id ? { ...x, source } : x))} /><StatusSelect label="Status" value={claim.status} onChange={(status) => updateSection("trust", state.trust.map((x) => x.id === claim.id ? { ...x, status } : x))} /><StatusSelect label="Approval" value={claim.approvalStatus} onChange={(approvalStatus) => updateSection("trust", state.trust.map((x) => x.id === claim.id ? { ...x, approvalStatus } : x))} /><IconButton label="Delete" onClick={() => updateSection("trust", state.trust.filter((x) => x.id !== claim.id))} icon={<Trash2 size={16} />} /></div>)}</EditableList><div className="form-grid"><Field label="Trust badges" value={state.evidence.trustBadges} onChange={(trustBadges) => updateSection("evidence", { ...state.evidence, trustBadges })} /><Field label="Origin evidence" value={state.evidence.originEvidence} onChange={(originEvidence) => updateSection("evidence", { ...state.evidence, originEvidence })} /><Field label="Certificate" value={state.evidence.certificate} onChange={(certificate) => updateSection("evidence", { ...state.evidence, certificate })} /><Field label="Responsible-use information" value={state.evidence.responsibleUse} onChange={(responsibleUse) => updateSection("evidence", { ...state.evidence, responsibleUse })} multiline /></div></div>;
   }
 
-  if (step.id === "inventory") {
-    return (
-      <div className="form-grid compact">
-        <label className="field">
-          <span>Stock status</span>
-          <select value={state.inventory.stockStatus} onChange={(event) => updateSection("inventory", { ...state.inventory, stockStatus: event.target.value as ProductTreatmentState["inventory"]["stockStatus"] })}>
-            <option>AVAILABLE</option>
-            <option>LOW_STOCK</option>
-            <option>OUT_OF_STOCK</option>
-            <option>PREORDER</option>
-            <option>WAITLIST</option>
-          </select>
-        </label>
-        <NumberField label="Stock quantity" value={state.inventory.stockQty} onChange={(stockQty) => updateSection("inventory", { ...state.inventory, stockQty })} />
-        <NumberField label="Quantity" value={state.inventory.quantity} onChange={(quantity) => updateSection("inventory", { ...state.inventory, quantity })} />
-        <Field label="Availability message" value={state.inventory.availabilityMessage} onChange={(availabilityMessage) => updateSection("inventory", { ...state.inventory, availabilityMessage })} />
-      </div>
-    );
+  if (step.id === "priceStockVariants") {
+    return <div className="stack"><div className="form-grid"><Field label="Currency" value={state.pricing.currency} onChange={(currency) => updateSection("pricing", { ...state.pricing, currency })} /><NumberField label="Gross price" value={state.pricing.grossPrice} onChange={(grossPrice) => updateSection("pricing", { ...state.pricing, grossPrice })} /><NumberField label="Tax rate" value={state.pricing.taxRate} onChange={(taxRate) => updateSection("pricing", { ...state.pricing, taxRate })} /><NumberField label="Reference price" value={state.pricing.referencePrice} onChange={(referencePrice) => updateSection("pricing", { ...state.pricing, referencePrice })} /><Select label="Discount type" value={state.pricing.discountType} options={["NONE", "PERCENTAGE", "AMOUNT"]} onChange={(discountType) => updateSection("pricing", { ...state.pricing, discountType: discountType as ProductTreatmentState["pricing"]["discountType"] })} /><NumberField label="Discount value" value={state.pricing.discountValue} onChange={(discountValue) => updateSection("pricing", { ...state.pricing, discountValue })} /><Field label="Quantity tiers" value={state.pricing.quantityTiers} onChange={(quantityTiers) => updateSection("pricing", { ...state.pricing, quantityTiers })} /><Field label="Promo code" value={state.pricing.promoCode} onChange={(promoCode) => updateSection("pricing", { ...state.pricing, promoCode })} /></div><div className="form-grid"><Select label="Stock status" value={state.inventory.stockStatus} options={["AVAILABLE", "LOW_STOCK", "OUT_OF_STOCK", "PREORDER", "WAITLIST"]} onChange={(stockStatus) => updateSection("inventory", { ...state.inventory, stockStatus: stockStatus as ProductTreatmentState["inventory"]["stockStatus"] })} /><NumberField label="Stock quantity" value={state.inventory.stockQty} onChange={(stockQty) => updateSection("inventory", { ...state.inventory, stockQty })} /><NumberField label="Low stock threshold" value={state.inventory.lowStockThreshold} onChange={(lowStockThreshold) => updateSection("inventory", { ...state.inventory, lowStockThreshold })} /><NumberField label="Quantity" value={state.inventory.quantity} onChange={(quantity) => updateSection("inventory", { ...state.inventory, quantity })} /><Field label="Availability message" value={state.inventory.availabilityMessage} onChange={(availabilityMessage) => updateSection("inventory", { ...state.inventory, availabilityMessage })} /><Field label="Next lot" value={state.inventory.nextLot} onChange={(nextLot) => updateSection("inventory", { ...state.inventory, nextLot })} /></div><EditableList title="Variants" addLabel="Add variant" onAdd={() => updateSection("variants", [...state.variants, { id: crypto.randomUUID(), variant: "", option: "", pack: "", quantity: "", personalisation: "PENDING" }])}>{state.variants.map((variant) => <div className="form-row-card" key={variant.id}><Field label="Variant" value={variant.variant} onChange={(value) => updateSection("variants", state.variants.map((x) => x.id === variant.id ? { ...x, variant: value } : x))} /><Field label="Option" value={variant.option} onChange={(option) => updateSection("variants", state.variants.map((x) => x.id === variant.id ? { ...x, option } : x))} /><Field label="Pack" value={variant.pack} onChange={(pack) => updateSection("variants", state.variants.map((x) => x.id === variant.id ? { ...x, pack } : x))} /><IconButton label="Delete" onClick={() => updateSection("variants", state.variants.filter((x) => x.id !== variant.id))} icon={<Trash2 size={16} />} /></div>)}</EditableList></div>;
   }
 
-  return (
-    <div className="phase-placeholder">
-      <h2>{step.title} workspace</h2>
-      <p>This step is wired into routing, learning feed, autosave, and readiness. Its complete controls will be expanded in its implementation phase.</p>
-    </div>
-  );
+  if (step.id === "commerceConversion") {
+    return <div className="form-grid"><Toggle label="Primary CTA enabled" checked={state.ctas.primary.enabled} onChange={(enabled) => updateSection("ctas", { ...state.ctas, primary: { ...state.ctas.primary, enabled } })} /><Field label="Primary CTA label" value={state.ctas.primary.label} onChange={(label) => updateSection("ctas", { ...state.ctas, primary: { ...state.ctas.primary, label } })} /><Field label="Secondary CTA label" value={state.ctas.secondary.label} onChange={(label) => updateSection("ctas", { ...state.ctas, secondary: { ...state.ctas.secondary, label } })} /><Field label="Personalisation CTA label" value={state.ctas.personalisation.label} onChange={(label) => updateSection("ctas", { ...state.ctas, personalisation: { ...state.ctas.personalisation, label } })} /><Field label="Payment methods" value={state.commercialTerms.paymentMethods} onChange={(paymentMethods) => updateSection("commercialTerms", { ...state.commercialTerms, paymentMethods })} /><Toggle label="Secure payment" checked={state.commercialTerms.securePayment} onChange={(securePayment) => updateSection("commercialTerms", { ...state.commercialTerms, securePayment })} /><Field label="Shipping" value={state.commercialTerms.shipping} onChange={(shipping) => updateSection("commercialTerms", { ...state.commercialTerms, shipping })} /><Field label="Delivery window" value={state.commercialTerms.deliveryWindow} onChange={(deliveryWindow) => updateSection("commercialTerms", { ...state.commercialTerms, deliveryWindow })} /><Field label="Returns" value={state.commercialTerms.returns} onChange={(returns) => updateSection("commercialTerms", { ...state.commercialTerms, returns })} /><Field label="Refund" value={state.commercialTerms.refund} onChange={(refund) => updateSection("commercialTerms", { ...state.commercialTerms, refund })} /><Field label="Warranty" value={state.commercialTerms.warranty} onChange={(warranty) => updateSection("commercialTerms", { ...state.commercialTerms, warranty })} /><Field label="Legal age" value={state.commercialTerms.legalAge} onChange={(legalAge) => updateSection("commercialTerms", { ...state.commercialTerms, legalAge })} /></div>;
+  }
+
+  if (step.id === "serviceRelationship") {
+    return <div className="form-grid"><Field label="Dispatch SLA" value={state.service.dispatchSla} onChange={(dispatchSla) => updateSection("service", { ...state.service, dispatchSla })} /><Field label="Delivery SLA" value={state.service.deliverySla} onChange={(deliverySla) => updateSection("service", { ...state.service, deliverySla })} /><Field label="Carrier" value={state.service.carrier} onChange={(carrier) => updateSection("service", { ...state.service, carrier })} /><Field label="Breakage policy" value={state.service.breakagePolicy} onChange={(breakagePolicy) => updateSection("service", { ...state.service, breakagePolicy })} /><Field label="Incident route" value={state.service.incidentRoute} onChange={(incidentRoute) => updateSection("service", { ...state.service, incidentRoute })} /><Field label="RMA" value={state.service.rma} onChange={(rma) => updateSection("service", { ...state.service, rma })} /><Field label="Customer service" value={state.service.customerService} onChange={(customerService) => updateSection("service", { ...state.service, customerService })} /><Field label="Post-sale communication" value={state.service.postSaleCommunication} onChange={(postSaleCommunication) => updateSection("service", { ...state.service, postSaleCommunication })} /><Toggle label="Customer area" checked={state.relationship.customerArea} onChange={(customerArea) => updateSection("relationship", { ...state.relationship, customerArea })} /><Field label="CRM destination" value={state.relationship.crmDestination} onChange={(crmDestination) => updateSection("relationship", { ...state.relationship, crmDestination })} /><Field label="Consent" value={state.relationship.consent} onChange={(consent) => updateSection("relationship", { ...state.relationship, consent })} /><Field label="Loyalty / referral" value={state.relationship.loyalty} onChange={(loyalty) => updateSection("relationship", { ...state.relationship, loyalty })} /></div>;
+  }
+
+  if (step.id === "seoAioComplements") {
+    return <div className="stack"><div className="form-grid"><Field label="SEO title" value={state.seoAio.seoTitle} onChange={(seoTitle) => updateSection("seoAio", { ...state.seoAio, seoTitle })} /><Field label="Meta description" value={state.seoAio.metaDescription} onChange={(metaDescription) => updateSection("seoAio", { ...state.seoAio, metaDescription })} multiline /><Field label="Keywords" value={state.seoAio.keywords} onChange={(keywords) => updateSection("seoAio", { ...state.seoAio, keywords })} /><Field label="Semantic entities" value={state.seoAio.semanticEntities} onChange={(semanticEntities) => updateSection("seoAio", { ...state.seoAio, semanticEntities })} multiline /><Field label="FAQ" value={state.seoAio.faq} onChange={(faq) => updateSection("seoAio", { ...state.seoAio, faq })} multiline /><Field label="AI-readable conditions" value={state.seoAio.aiReadableConditions} onChange={(aiReadableConditions) => updateSection("seoAio", { ...state.seoAio, aiReadableConditions })} multiline /></div><EditableList title="Complements / Cross-sell" addLabel="Add complement" onAdd={() => updateSection("crossSell", [...state.crossSell, { id: crypto.randomUUID(), type: "", title: "", price: "", cta: "" }])}>{state.crossSell.map((item) => <div className="form-row-card" key={item.id}><Field label="Type" value={item.type} onChange={(type) => updateSection("crossSell", state.crossSell.map((x) => x.id === item.id ? { ...x, type } : x))} /><Field label="Title" value={item.title} onChange={(title) => updateSection("crossSell", state.crossSell.map((x) => x.id === item.id ? { ...x, title } : x))} /><Field label="Price" value={item.price} onChange={(price) => updateSection("crossSell", state.crossSell.map((x) => x.id === item.id ? { ...x, price } : x))} /><IconButton label="Delete" onClick={() => updateSection("crossSell", state.crossSell.filter((x) => x.id !== item.id))} icon={<Trash2 size={16} />} /></div>)}</EditableList></div>;
+  }
+
+  return <ReviewPanel state={state} />;
 }
 
-function MediaSlot({ asset, index, onChange }: { asset: MediaAsset; index: number; onChange: (asset: MediaAsset) => void }) {
-  return (
-    <section className="media-slot">
-      <div className="media-upload-placeholder">
-        <Upload size={20} />
-        UPLOAD IMAGE
-      </div>
-      <div className="media-slot-body">
-        <div className="media-slot-header">
-          <strong>{String(index + 1).padStart(2, "0")} {roleLabel(asset.role)}</strong>
-          {asset.isMain && <span className="status-badge confirmed">MAIN IMAGE</span>}
-        </div>
-        <Field label="Image role" value={roleLabel(asset.role)} onChange={() => undefined} />
-        <Field label="Alt text" value={asset.altText} onChange={(altText) => onChange({ ...asset, altText })} status={asset.altText === "PENDING" ? "PENDING" : asset.altText ? "CONFIRMED" : "UNKNOWN"} />
-        <label className="field">
-          <span>Approval status</span>
-          <select value={asset.approvalStatus} onChange={(event) => onChange({ ...asset, approvalStatus: event.target.value as EvidenceStatus })}>
-            {fieldStatuses.map((status) => <option key={status}>{status}</option>)}
-          </select>
-        </label>
-      </div>
-    </section>
-  );
+function MediaSlot({ asset, allMedia, mediaUrl, update }: { asset: MediaAsset; allMedia: MediaAsset[]; mediaUrl?: string; update: (media: MediaAsset[]) => void }) {
+  async function upload(file: File) {
+    const key = `${asset.id}-${crypto.randomUUID()}`;
+    await saveMediaBlob(key, file);
+    update(allMedia.map((item) => item.id === asset.id ? { ...item, sourceType: "indexeddb", blobKey: key, url: undefined, fileName: file.name } : item));
+  }
+  async function clear() {
+    if (asset.blobKey) await deleteMediaBlob(asset.blobKey);
+    update(allMedia.map((item) => item.id === asset.id ? { ...item, sourceType: "empty", blobKey: undefined, url: undefined, fileName: undefined } : item));
+  }
+  function setMain() { update(allMedia.map((item) => ({ ...item, isMain: item.id === asset.id }))); }
+  function move(delta: number) {
+    const sorted = [...allMedia].sort((a, b) => a.order - b.order);
+    const index = sorted.findIndex((item) => item.id === asset.id);
+    const target = sorted[index + delta];
+    if (!target) return;
+    update(allMedia.map((item) => item.id === asset.id ? { ...item, order: target.order } : item.id === target.id ? { ...item, order: asset.order } : item));
+  }
+  function patch(next: Partial<MediaAsset>) { update(allMedia.map((item) => item.id === asset.id ? { ...item, ...next } : item)); }
+  function patchCrop(key: keyof MediaAsset["crop"], value: number) { patch({ crop: { ...asset.crop, [key]: value } }); }
+
+  return <section className="media-slot"><div className="media-preview-frame">{mediaUrl ? <img src={mediaUrl} alt={asset.altText} crossOrigin="anonymous" style={{ transform: `scale(${asset.crop.zoom})`, objectPosition: `${asset.crop.x}% ${asset.crop.y}%` }} /> : <><Upload size={20} />UPLOAD IMAGE</>}</div><div className="media-slot-body"><div className="media-slot-header"><strong>{String(asset.order).padStart(2, "0")} {asset.title}</strong>{asset.isMain && <span className="status-badge confirmed">MAIN</span>}</div><input type="file" accept="image/*" onChange={(event) => event.target.files?.[0] && upload(event.target.files[0])} /><Field label="Alt text" value={asset.altText} onChange={(altText) => patch({ altText })} /><StatusSelect label="Approval status" value={asset.approvalStatus} onChange={(approvalStatus) => patch({ approvalStatus })} /><Field label="Usage rights" value={asset.usageRights} onChange={(usageRights) => patch({ usageRights })} /><div className="range-grid"><Range label="Zoom" min={1} max={2.5} step={0.05} value={asset.crop.zoom} onChange={(value) => patchCrop("zoom", value)} /><Range label="Horizontal" min={0} max={100} value={asset.crop.x} onChange={(value) => patchCrop("x", value)} /><Range label="Vertical" min={0} max={100} value={asset.crop.y} onChange={(value) => patchCrop("y", value)} /></div><div className="tool-row"><IconButton label="Main" onClick={setMain} icon={null} /><IconButton label="Up" onClick={() => move(-1)} icon={<ArrowUp size={16} />} /><IconButton label="Down" onClick={() => move(1)} icon={<ArrowDown size={16} />} /><IconButton label="Delete" onClick={clear} icon={<Trash2 size={16} />} /></div></div></section>;
 }
 
-function Field({ label, value, onChange, multiline = false, status }: { label: string; value: string; onChange: (value: string) => void; multiline?: boolean; status?: EvidenceStatus }) {
-  return (
-    <label className="field">
-      <span>{label}{status && <em className={`status-badge ${status.toLowerCase()}`}>{status}</em>}</span>
-      {multiline ? (
-        <textarea value={value} onChange={(event) => onChange(event.target.value)} rows={4} />
-      ) : (
-        <input value={value} onChange={(event) => onChange(event.target.value)} />
-      )}
-    </label>
-  );
-}
-
-function NumberField({ label, value, onChange }: { label: string; value: number; onChange: (value: number) => void }) {
-  return (
-    <label className="field">
-      <span>{label}</span>
-      <input type="number" value={value} onChange={(event) => onChange(Number(event.target.value))} />
-    </label>
-  );
-}
-
-function roleLabel(role: MediaAsset["role"]) {
-  return role.replaceAll("_", " / ");
-}
+function ReviewPanel({ state }: { state: ProductTreatmentState }) { return <div className="review-grid"><div><h3>PDP readiness</h3><p>Review is calculated in the right status rail and Output center. Fix missing data, pending evidence, media, price, inventory, commerce, service and SEO/AIO before publishing.</p></div><pre>{JSON.stringify({ product: state.product.productName || "PENDING", sku: state.identity.sku || "PENDING", price: state.pricing.grossPrice, stock: state.inventory.stockStatus, status: state.status.publishStatus }, null, 2)}</pre></div>; }
+function EditableList({ title, addLabel, onAdd, children }: { title: string; addLabel: string; onAdd: () => void; children: React.ReactNode }) { return <section className="editable-list"><div className="section-heading"><h3>{title}</h3><button type="button" className="secondary-button" onClick={onAdd}><Plus size={16} />{addLabel}</button></div>{children}</section>; }
+function Field({ label, value, onChange, multiline = false }: { label: string; value: string; onChange: (value: string) => void; multiline?: boolean }) { return <label className="field"><span>{label}<em className={`status-badge ${statusFor(value).toLowerCase()}`}>{statusFor(value)}</em></span>{multiline ? <textarea value={value} onChange={(event) => onChange(event.target.value)} rows={4} /> : <input value={value} onChange={(event) => onChange(event.target.value)} />}</label>; }
+function NumberField({ label, value, onChange }: { label: string; value: number; onChange: (value: number) => void }) { return <label className="field"><span>{label}</span><input type="number" value={value} onChange={(event) => onChange(Number(event.target.value))} /></label>; }
+function Select({ label, value, options, onChange }: { label: string; value: string; options: string[]; onChange: (value: string) => void }) { return <label className="field"><span>{label}</span><select value={value} onChange={(event) => onChange(event.target.value)}>{options.map((option) => <option key={option}>{option}</option>)}</select></label>; }
+function StatusSelect({ label, value, onChange }: { label: string; value: EvidenceStatus; onChange: (value: EvidenceStatus) => void }) { return <Select label={label} value={value} options={statuses} onChange={(value) => onChange(value as EvidenceStatus)} />; }
+function Toggle({ label, checked, onChange }: { label: string; checked: boolean; onChange: (value: boolean) => void }) { return <label className="toggle-field"><input type="checkbox" checked={checked} onChange={(event) => onChange(event.target.checked)} /><span>{label}</span></label>; }
+function Range({ label, min, max, step = 1, value, onChange }: { label: string; min: number; max: number; step?: number; value: number; onChange: (value: number) => void }) { return <label className="range-field"><span>{label}: {value}</span><input type="range" min={min} max={max} step={step} value={value} onChange={(event) => onChange(Number(event.target.value))} /></label>; }
+function IconButton({ label, icon, onClick }: { label: string; icon: React.ReactNode; onClick: () => void }) { return <button type="button" className="mini-button" onClick={onClick}>{icon}{label}</button>; }
+function statusFor(value: string) { if (!value) return "PENDING"; if (value === "PENDING" || value === "UNKNOWN") return value; return "CONFIRMED"; }
