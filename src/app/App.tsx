@@ -37,6 +37,7 @@ export function App() {
   } = useProductTreatment();
   const [prompt, setPrompt] = useState("");
   const [promptCopied, setPromptCopied] = useState(false);
+  const [shareStatus, setShareStatus] = useState<"idle" | "preparing" | "shared" | "downloaded" | "error">("idle");
   const activeIndex = steps.findIndex((step) => step.id === currentStep.id);
   const readiness = buildReadiness(state);
   const promptText = useMemo(() => prompt || buildAiPrompt(state), [prompt, state]);
@@ -63,6 +64,17 @@ export function App() {
     window.setTimeout(() => setPromptCopied(false), 1600);
   }
 
+  async function handleSharePdf() {
+    setShareStatus("preparing");
+    try {
+      const result = await sharePdpPdf();
+      setShareStatus(result);
+    } catch (error) {
+      setShareStatus(error instanceof DOMException && error.name === "AbortError" ? "idle" : "error");
+    }
+    window.setTimeout(() => setShareStatus("idle"), 2200);
+  }
+
   return (
     <div className="app-shell">
       <header className="docroi-header"><a className="docroi-logo-link" href="https://el-botiquin-del-doc-roi.vercel.app/" target="_blank" rel="noreferrer"><img src={docRoiLogo} alt="DOC ROI" /></a><nav className="docroi-header-nav" aria-label="DOC ROI navigation"><a className="docroi-header-action" href="#builder">Open Tool</a></nav></header>
@@ -79,7 +91,7 @@ export function App() {
 
         {mode === "preview" && <main id="preview" className="preview-layout docroi-anchor-target"><ProductDetailPage data={state} mediaUrls={mediaUrls} /></main>}
 
-        {mode === "output" && <main id="output" className="output-layout docroi-anchor-target"><section className="output-panel"><h2>output center</h2><p>all outputs read the same canonical state used by preview.</p><div className="output-stack"><div className="output-group"><button type="button" className="output-action" onClick={downloadPdpPdf}><Download size={18} /><span>download pdp as pdf</span></button><button type="button" className="output-action" onClick={downloadPdpPng}><Download size={18} /><span>download pdp as png</span></button></div><div className="output-group"><button type="button" className="output-action" onClick={sharePdpPdf}><Share2 size={18} /><span>share pdp pdf</span></button></div><div className="output-group prompt-group"><button type="button" className="output-action" onClick={generatePrompt}><FileJson size={18} /><span>generate ai product page prompt</span></button><textarea className="prompt-output" value={promptText} onChange={(event) => setPrompt(event.target.value)} /><button type="button" className={promptCopied ? "copy-prompt-button copied" : "copy-prompt-button"} onClick={copyPrompt} aria-label="Copy prompt">{promptCopied ? <Check size={16} /> : <Copy size={16} />}<span>{promptCopied ? "copied" : "copy prompt"}</span></button></div></div></section><section><ProductDetailPage data={state} mediaUrls={mediaUrls} compact /><ReadinessPanel readiness={readiness} /></section></main>}
+        {mode === "output" && <main id="output" className="output-layout docroi-anchor-target"><section className="output-panel"><h2>output center</h2><p>all outputs read the same canonical state used by preview.</p><div className="output-stack"><div className="output-group"><button type="button" className="output-action" onClick={downloadPdpPdf}><Download size={18} /><span>download pdp as pdf</span></button><button type="button" className="output-action" onClick={downloadPdpPng}><Download size={18} /><span>download pdp as png</span></button></div><div className="output-group"><button type="button" className="output-action" onClick={handleSharePdf} disabled={shareStatus === "preparing"}><Share2 size={18} /><span>{shareStatus === "preparing" ? "preparing pdf" : shareStatus === "shared" ? "shared" : shareStatus === "downloaded" ? "downloaded + link copied" : shareStatus === "error" ? "share failed" : "share pdp pdf"}</span></button></div><div className="output-group prompt-group"><button type="button" className="output-action" onClick={generatePrompt}><FileJson size={18} /><span>generate ai product page prompt</span></button><textarea className="prompt-output" value={promptText} onChange={(event) => setPrompt(event.target.value)} /><button type="button" className={promptCopied ? "copy-prompt-button copied" : "copy-prompt-button"} onClick={copyPrompt} aria-label="Copy prompt">{promptCopied ? <Check size={16} /> : <Copy size={16} />}<span>{promptCopied ? "copied" : "copy prompt"}</span></button></div></div></section><section><ProductDetailPage data={state} mediaUrls={mediaUrls} compact /><ReadinessPanel readiness={readiness} /></section></main>}
       </section>
 
       <ClosingSections logoUrl={docRoiLogo} />
@@ -92,6 +104,9 @@ function ReadinessPanel({ readiness }: { readiness: ReturnType<typeof buildReadi
 }
 
 function ReadinessColumn({ title, items }: { title: string; items: string[] }) { return <div><h3>{title}</h3>{items.length ? <ul>{items.map((item) => <li key={item}>{item}</li>)}</ul> : <p>no items.</p>}</div>; }
+
+
+
 
 
 

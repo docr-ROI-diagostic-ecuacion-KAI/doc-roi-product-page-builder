@@ -24,7 +24,9 @@ export function buildReadiness(state: ProductTreatmentState) {
   if (!state.ctas.primary.enabled || !state.ctas.primary.label) issues.push({ area: "COMMERCE", severity: "missing", message: "Missing primary CTA" });
   if (state.trust.some((claim) => claim.claim && (!claim.source || claim.source === "PENDING" || claim.source === "UNKNOWN"))) issues.push({ area: "EVIDENCE", severity: "warning", message: "Claim without confirmed evidence source" });
   if (state.commercialTerms.shipping && state.commercialTerms.shipping !== "PENDING" && (!state.service.deliverySla || state.service.deliverySla === "PENDING")) issues.push({ area: "SERVICE", severity: "warning", message: "Shipping promise without delivery SLA" });
-  if (state.commercialTerms.legalAge && state.commercialTerms.legalAge !== "PENDING" && state.commercialTerms.legalAge !== "UNKNOWN") issues.push({ area: "LEGAL", severity: "warning", message: "Age-restricted product needs compliance review" });
+  const hasResponsibleUseReview = Boolean(state.evidence.responsibleUse && state.evidence.responsibleUse !== "PENDING" && state.evidence.responsibleUse !== "UNKNOWN");
+  const hasLegalAgeRule = Boolean(state.commercialTerms.legalAge && state.commercialTerms.legalAge !== "PENDING" && state.commercialTerms.legalAge !== "UNKNOWN");
+  if (hasLegalAgeRule && !hasResponsibleUseReview) issues.push({ area: "LEGAL", severity: "warning", message: "Age-restricted product needs compliance review" });
   if (!state.seoAio.seoTitle) issues.push({ area: "SEO/AIO", severity: "pending", message: "SEO title pending" });
 
   const criticalMissing = issues.filter((issue) => issue.severity === "missing").length;
@@ -41,3 +43,4 @@ export function buildReadiness(state: ProductTreatmentState) {
     pending: issues.filter((issue) => issue.severity === "pending"),
   };
 }
+

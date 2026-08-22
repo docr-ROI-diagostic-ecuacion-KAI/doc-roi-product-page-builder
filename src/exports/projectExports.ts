@@ -13,14 +13,21 @@ export async function downloadPdpPdf() {
   pdf.save("doc-roi-pdp.pdf");
 }
 
-export async function sharePdpPdf() {
+export async function sharePdpPdf(): Promise<"shared" | "downloaded"> {
   const pdf = await buildPdpPdf();
   const file = new File([pdf.output("blob")], "doc-roi-pdp.pdf", { type: "application/pdf" });
   if (navigator.canShare?.({ files: [file] })) {
     await navigator.share({ title: "DOC ROI PDP", text: "DOC ROI product detail page PDF", files: [file] });
-    return;
+    return "shared";
   }
+  if (navigator.share) {
+    await navigator.share({ title: "DOC ROI PDP", text: "DOC ROI product detail page PDF", url: window.location.href });
+    pdf.save("doc-roi-pdp.pdf");
+    return "shared";
+  }
+  await navigator.clipboard?.writeText(window.location.href).catch(() => undefined);
   pdf.save("doc-roi-pdp.pdf");
+  return "downloaded";
 }
 
 async function buildPdpPdf() {
@@ -119,3 +126,4 @@ function downloadUrl(url: string, filename: string) {
   link.remove();
   if (url.startsWith("blob:")) window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
+
