@@ -555,3 +555,28 @@ section[id], div[id], .docroi-anchor-target { scroll-margin-top: 100px; }
     width: 100%;
   }
 }
+
+/* Final header/hero polish for the English treatment exercise. */
+.docroi-header {
+  justify-content: flex-start;
+}
+.docroi-header-nav {
+  display: none;
+}
+.hero-actions {
+  justify-content: center;
+  max-width: 760px;
+}
+.hero-primary,
+.hero-secondary {
+  background: #ffffff;
+  border: 1px solid #ffffff;
+  color: #05070b;
+  min-width: 220px;
+  text-align: center;
+}
+.hero-primary:hover,
+.hero-secondary:hover {
+  box-shadow: 0 16px 42px rgba(0,0,0,.24);
+  transform: translateY(-1px);
+}

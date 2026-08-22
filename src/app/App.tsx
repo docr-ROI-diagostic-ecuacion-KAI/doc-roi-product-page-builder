@@ -61,12 +61,9 @@ export function App() {
 
   return (
     <div className="app-shell">
-      <header className="docroi-header">
-        <a className="docroi-logo-link" href="https://el-botiquin-del-doc-roi.vercel.app/" target="_blank" rel="noreferrer"><img src={docRoiLogo} alt="DOC ROI" /></a>
-        <nav className="docroi-header-nav" aria-label="DOC ROI navigation"><a href="#method">Method</a><a href="#resources">Resources</a><a className="docroi-header-action" href="#builder">Open tool</a></nav>
-      </header>
+      <header className="docroi-header"><a className="docroi-logo-link" href="https://el-botiquin-del-doc-roi.vercel.app/" target="_blank" rel="noreferrer"><img src={docRoiLogo} alt="DOC ROI" /></a></header>
 
-      <section id="method" className="tool-intro docroi-anchor-target"><div className="hero-copy"><strong className="hero-specialty">ESPECIALIZACIÓN ESTRATEGIA · MARKET RESEARCH STRATEGY</strong><span>PÍLDORA · PRODUCT SYSTEM</span><h1>Build My Product Page</h1><p>A structured learning experience to convert product data, media, price, stock, evidence and service into a professional ecommerce Product Detail Page.</p><div className="hero-actions"><a className="hero-primary" href="#builder">Build My Product Page</a><button type="button" className="hero-secondary" onClick={loadExampleAndPreview}>Load Example · Don Espadín</button></div></div><div className="hero-video-frame" aria-label="introductory video placeholder"><button type="button" className="video-play" aria-label="Play introduction video">▶</button><div><strong>Product System</strong><span>intro video placeholder</span></div></div></section>
+      <section id="method" className="tool-intro docroi-anchor-target"><div className="hero-copy"><strong className="hero-specialty">STRATEGY SPECIALIZATION · MARKET RESEARCH STRATEGY</strong><span>TREATMENT · PILL · PRODUCT SYSTEM</span><h1>Build My Product Page</h1><p>A structured learning experience to convert product data, media, price, stock, evidence and service into a professional ecommerce Product Detail Page.</p><div className="hero-actions"><button type="button" className="hero-primary" onClick={loadExampleAndPreview}>Load Example</button><a className="hero-secondary" href="#builder">Open Treatment</a></div></div><div className="hero-video-frame" aria-label="introductory video placeholder"><button type="button" className="video-play" aria-label="Play introduction video">▶</button><div><strong>Product System</strong><span>intro video placeholder</span></div></div></section>
 
       <section id="builder" className="builder-shell docroi-anchor-target">
         <div className="workspace-toolbar">
