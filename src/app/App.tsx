@@ -1,10 +1,10 @@
-import { ArrowLeft, ArrowRight, CheckCircle2, Download, Eye, FileJson, Hammer, RotateCcw, Save } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Download, Eye, FileJson, Hammer, RotateCcw, Save, Share2 } from "lucide-react";
 import type { ComponentType } from "react";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { ClosingSections } from "../components/ClosingSections";
 import { ProductDetailPage } from "../components/ProductDetailPage";
 import { steps } from "../data/steps";
-import { buildAiPrompt, downloadPdpPdf, downloadPdpPng, downloadPrompt, exportProjectJson } from "../exports/projectExports";
+import { buildAiPrompt, downloadPdpPdf, downloadPdpPng, sharePdpPdf } from "../exports/projectExports";
 import { LearningFeed } from "../features/learning/LearningFeed";
 import { StepEditor } from "../features/treatment/StepEditor";
 import { StepNavigation } from "../features/treatment/StepNavigation";
@@ -32,11 +32,9 @@ export function App() {
     setStep,
     updateSection,
     loadDonEspadinExample,
-    importProjectJson,
     saveNow,
     resetProject,
   } = useProductTreatment();
-  const importRef = useRef<HTMLInputElement>(null);
   const [prompt, setPrompt] = useState("");
   const activeIndex = steps.findIndex((step) => step.id === currentStep.id);
   const readiness = buildReadiness(state);
@@ -75,7 +73,7 @@ export function App() {
 
         {mode === "preview" && <main id="preview" className="preview-layout docroi-anchor-target"><ProductDetailPage data={state} mediaUrls={mediaUrls} /></main>}
 
-        {mode === "output" && <main id="output" className="output-layout docroi-anchor-target"><section className="output-panel"><h2>output center</h2><p>all outputs read the same canonical state used by preview.</p><div className="output-grid"><button type="button" className="output-action" onClick={downloadPdpPdf}><Download size={18} />download pdp as pdf</button><button type="button" className="output-action" onClick={downloadPdpPng}><Download size={18} />download pdp as png</button><button type="button" className="output-action" onClick={generatePrompt}><FileJson size={18} />generate ai product page prompt</button><button type="button" className="output-action" onClick={() => exportProjectJson(state)}><FileJson size={18} />export project json</button><button type="button" className="output-action" onClick={() => importRef.current?.click()}><FileJson size={18} />import project json</button><input ref={importRef} type="file" accept="application/json" hidden onChange={(event) => event.target.files?.[0] && importProjectJson(event.target.files[0])} /></div><textarea className="prompt-output" value={promptText} onChange={(event) => setPrompt(event.target.value)} /></section><section><ProductDetailPage data={state} mediaUrls={mediaUrls} compact /><ReadinessPanel readiness={readiness} /></section></main>}
+        {mode === "output" && <main id="output" className="output-layout docroi-anchor-target"><section className="output-panel"><h2>output center</h2><p>all outputs read the same canonical state used by preview.</p><div className="output-grid"><button type="button" className="output-action" onClick={downloadPdpPdf}><Download size={18} /><span>download pdp as pdf</span></button><button type="button" className="output-action" onClick={downloadPdpPng}><Download size={18} /><span>download pdp as png</span></button><button type="button" className="output-action" onClick={generatePrompt}><FileJson size={18} /><span>generate ai product page prompt</span></button><button type="button" className="output-action" onClick={sharePdpPdf}><Share2 size={18} /><span>share pdp pdf</span></button></div><textarea className="prompt-output" value={promptText} onChange={(event) => setPrompt(event.target.value)} /></section><section><ProductDetailPage data={state} mediaUrls={mediaUrls} compact /><ReadinessPanel readiness={readiness} /></section></main>}
       </section>
 
       <ClosingSections logoUrl={docRoiLogo} />
@@ -88,4 +86,6 @@ function ReadinessPanel({ readiness }: { readiness: ReturnType<typeof buildReadi
 }
 
 function ReadinessColumn({ title, items }: { title: string; items: string[] }) { return <div><h3>{title}</h3>{items.length ? <ul>{items.map((item) => <li key={item}>{item}</li>)}</ul> : <p>no items.</p>}</div>; }
+
+
 

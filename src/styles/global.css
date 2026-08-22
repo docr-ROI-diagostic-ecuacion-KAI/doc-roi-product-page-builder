@@ -631,3 +631,9 @@ section[id], div[id], .docroi-anchor-target { scroll-margin-top: 100px; }
     width: 100%;
   }
 }
+
+/* Output actions: keep wrapped labels aligned to the left. */
+.output-action span {
+  flex: 1;
+  text-align: left;
+}

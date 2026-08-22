@@ -9,14 +9,28 @@ export async function downloadPdpPng() {
 }
 
 export async function downloadPdpPdf() {
+  const pdf = await buildPdpPdf();
+  pdf.save("doc-roi-pdp.pdf");
+}
+
+export async function sharePdpPdf() {
+  const pdf = await buildPdpPdf();
+  const file = new File([pdf.output("blob")], "doc-roi-pdp.pdf", { type: "application/pdf" });
+  if (navigator.canShare?.({ files: [file] })) {
+    await navigator.share({ title: "DOC ROI PDP", text: "DOC ROI product detail page PDF", files: [file] });
+    return;
+  }
+  pdf.save("doc-roi-pdp.pdf");
+}
+
+async function buildPdpPdf() {
   const element = getPdpElement();
   const canvas = await html2canvas(element, { scale: 2, useCORS: true, allowTaint: false, backgroundColor: "#ffffff" });
   const image = canvas.toDataURL("image/png");
   const pdf = new jsPDF({ orientation: canvas.width >= canvas.height ? "landscape" : "portrait", unit: "px", format: [canvas.width, canvas.height] });
   pdf.addImage(image, "PNG", 0, 0, canvas.width, canvas.height);
-  pdf.save("doc-roi-pdp.pdf");
+  return pdf;
 }
-
 export function exportProjectJson(state: ProductTreatmentState) {
   const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
   downloadUrl(URL.createObjectURL(blob), "doc-roi-product-project.json");
