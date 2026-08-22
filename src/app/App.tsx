@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, CheckCircle2, Download, Eye, FileJson, Hammer, RotateCcw, Save, Share2, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Download, Eye, FileJson, Hammer, RotateCcw, Save } from "lucide-react";
 import type { ComponentType } from "react";
 import { useMemo, useRef, useState } from "react";
 import { ClosingSections } from "../components/ClosingSections";
@@ -53,19 +53,6 @@ export function App() {
     window.requestAnimationFrame(() => document.getElementById("preview")?.scrollIntoView({ behavior: "smooth", block: "start" }));
   }
 
-  async function sharePage() {
-    const shareData = {
-      title: "doc roi product page builder",
-      text: "build a professional ecommerce product detail page from structured product decisions.",
-      url: window.location.href,
-    };
-    if (navigator.share) {
-      await navigator.share(shareData).catch(() => undefined);
-      return;
-    }
-    await navigator.clipboard?.writeText(window.location.href).catch(() => undefined);
-  }
-
   function generatePrompt() {
     const nextPrompt = buildAiPrompt(state);
     setPrompt(nextPrompt);
@@ -76,13 +63,10 @@ export function App() {
     <div className="app-shell">
       <header className="docroi-header">
         <a className="docroi-logo-link" href="https://el-botiquin-del-doc-roi.vercel.app/" target="_blank" rel="noreferrer"><img src={docRoiLogo} alt="DOC ROI" /></a>
-        <nav className="docroi-header-nav" aria-label="DOC ROI navigation"><button type="button" className="header-share-button" onClick={sharePage}><Share2 size={16} />share</button><a className="docroi-header-action" href="#builder">open tool</a></nav>
+        <nav className="docroi-header-nav" aria-label="DOC ROI navigation"><a href="#method">Method</a><a href="#resources">Resources</a><a className="docroi-header-action" href="#builder">Open tool</a></nav>
       </header>
 
-      <section className="tool-intro docroi-anchor-target">
-        <div className="hero-copy"><span>product system · basic</span><h1>build a professional ecommerce product detail page from structured product decisions.</h1><p>complete the fields, upload product photos and generate an ecommerce product page ready to print or save as pdf.</p><div className="hero-actions"><a className="hero-primary" href="#builder">build my product page</a><button type="button" className="hero-secondary" onClick={loadExampleAndPreview}><Sparkles size={16} />load example · don espadín</button></div></div>
-        <div className="hero-video-frame"><div>space for an introduction video</div></div>
-      </section>
+      <section id="method" className="tool-intro docroi-anchor-target"><div className="hero-copy"><strong className="hero-specialty">ESPECIALIZACIÓN ESTRATEGIA · MARKET RESEARCH STRATEGY</strong><span>PÍLDORA · PRODUCT SYSTEM</span><h1>Build My Product Page</h1><p>A structured learning experience to convert product data, media, price, stock, evidence and service into a professional ecommerce Product Detail Page.</p><div className="hero-actions"><a className="hero-primary" href="#builder">Build My Product Page</a><button type="button" className="hero-secondary" onClick={loadExampleAndPreview}>Load Example · Don Espadín</button></div></div><div className="hero-video-frame" aria-label="introductory video placeholder"><button type="button" className="video-play" aria-label="Play introduction video">▶</button><div><strong>Product System</strong><span>intro video placeholder</span></div></div></section>
 
       <section id="builder" className="builder-shell docroi-anchor-target">
         <div className="workspace-toolbar">
