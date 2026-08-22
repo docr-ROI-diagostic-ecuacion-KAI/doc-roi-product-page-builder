@@ -1,4 +1,4 @@
-export function ClosingSections() {
+export function ClosingSections({ logoUrl }: { logoUrl: string }) {
   const diiip = [
     ["D", "Data", "Raw product data: identity, images, pricing, stock, commercial conditions and evidence."],
     ["I", "Information", "The data is structured as SKU, attributes, media roles, prices, states, SLA and claims."],
@@ -23,7 +23,7 @@ export function ClosingSections() {
         </div>
       </section>
 
-      <footer className="docroi-footer"><div><a href="https://el-botiquin-del-doc-roi.vercel.app/" target="_blank" rel="noreferrer"><img src="https://docroi.marketing/wp-content/uploads/2026/05/Logo_Negro_DoC_ROI.jpg" alt="DOC ROI" /></a><p><a href="https://doc-roi-executive.vercel.app/" target="_blank" rel="noreferrer">Consulta con DOC ROI →</a></p><nav><a href="https://docroi.marketing/aviso-legal/" target="_blank" rel="noreferrer">Política de privacidad</a><span>|</span><a href="https://docroi.marketing/aviso-legal/" target="_blank" rel="noreferrer">Aviso legal</a><span>|</span><a href="https://docroi.marketing/aviso-legal/" target="_blank" rel="noreferrer">Propiedad intelectual</a></nav><p className="copyright">La propiedad intelectual del ecosistema DOC ROI pertenece al <a href="https://docroi.marketing/ph-d-jorge-lucio/" target="_blank" rel="noreferrer">Ph. D. Jorge Lucio Sánchez Galán.</a></p></div></footer>
+      <footer className="docroi-footer"><div><a href="https://el-botiquin-del-doc-roi.vercel.app/" target="_blank" rel="noreferrer"><img src={logoUrl} alt="DOC ROI" /></a><p><a href="https://doc-roi-executive.vercel.app/" target="_blank" rel="noreferrer">Consulta con DOC ROI →</a></p><nav><a href="https://docroi.marketing/aviso-legal/" target="_blank" rel="noreferrer">Política de privacidad</a><span>|</span><a href="https://docroi.marketing/aviso-legal/" target="_blank" rel="noreferrer">Aviso legal</a><span>|</span><a href="https://docroi.marketing/aviso-legal/" target="_blank" rel="noreferrer">Propiedad intelectual</a></nav><p className="copyright">La propiedad intelectual del ecosistema DOC ROI pertenece al <a href="https://docroi.marketing/ph-d-jorge-lucio/" target="_blank" rel="noreferrer">Ph. D. Jorge Lucio Sánchez Galán.</a></p></div></footer>
     </>
   );
 }
