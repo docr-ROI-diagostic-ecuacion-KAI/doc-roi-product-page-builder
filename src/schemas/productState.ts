@@ -4,6 +4,7 @@ export type EvidenceStatus =
   | "CONFIRMED"
   | "DECISION"
   | "HYPOTHESIS"
+  | "PENDING"
   | "SUPPLIER_EVIDENCE"
   | "MARKET_EVIDENCE"
   | "LEGAL_EVIDENCE"

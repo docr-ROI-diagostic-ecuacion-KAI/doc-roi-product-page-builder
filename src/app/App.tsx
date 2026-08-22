@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, CheckCircle2, Download, Eye, FileJson, Hammer, RotateCcw, Save } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Download, Eye, FileJson, Hammer, RotateCcw, Save, Sparkles } from "lucide-react";
 import type { ComponentType } from "react";
 import { ProductDetailPage } from "../components/ProductDetailPage";
 import { LearningFeed } from "../features/learning/LearningFeed";
@@ -25,6 +25,7 @@ export function App() {
     setMode,
     setStep,
     updateSection,
+    loadDonEspadinExample,
     saveNow,
     resetProject,
   } = useProductTreatment();
@@ -34,11 +35,19 @@ export function App() {
   return (
     <div className="app-shell">
       <header className="topbar">
-        <div>
-          <p className="brand-mark">DOC ROI</p>
-          <p className="phase-label">Phase 03 · Product System</p>
+        <div className="topbar-left">
+          <span className="phase-capsule">03 · PRODUCT</span>
+          <span className="topbar-separator" />
+          <div>
+            <p className="brand-mark">Phase 03 · Product System</p>
+            <p className="phase-label">Professional PDP builder treatment</p>
+          </div>
         </div>
         <div className="topbar-actions" aria-label="Application status and actions">
+          <button className="example-button" type="button" onClick={loadDonEspadinExample}>
+            <Sparkles size={16} />
+            LOAD EXAMPLE · DON ESPADÍN
+          </button>
           <div className="autosave" aria-live="polite">
             <CheckCircle2 size={16} />
             {isSaving ? "Saving" : lastSavedAt ? `Saved ${lastSavedAt.toLocaleTimeString()}` : "Autosave ready"}
@@ -46,10 +55,12 @@ export function App() {
           <button className="icon-button" type="button" onClick={saveNow} aria-label="Save project" title="Save project">
             <Save size={18} />
           </button>
-          <button className="icon-button caution" type="button" onClick={resetProject} aria-label="Reset project" title="Reset project">
-            <RotateCcw size={18} />
+          <button className="reset-button" type="button" onClick={resetProject}>
+            <RotateCcw size={16} />
+            RESET PROJECT
           </button>
-          <div className="logo-box" aria-label="DOC ROI logo">ROI</div>
+          <div className="logo-box" aria-label="DOC ROI logo">DOC ROI</div>
+          <span className="treatment-capsule">TREATMENT</span>
         </div>
       </header>
 
@@ -72,7 +83,7 @@ export function App() {
 
       {mode === "build" && (
         <main className="build-layout">
-          <StepNavigation activeStep={currentStep.id} onSelect={setStep} progress={readiness.progress} />
+          <StepNavigation activeStep={currentStep.id} onSelect={setStep} progress={readiness.progress} state={state} />
           <section className="work-area" aria-labelledby="step-title">
             <div className="step-kicker">Step {String(activeIndex + 1).padStart(2, "0")} of 15</div>
             <h1 id="step-title">{currentStep.title}</h1>
@@ -103,12 +114,12 @@ export function App() {
         <main className="output-layout">
           <section className="output-panel">
             <h1>Output Center</h1>
-            <p>Phase 1 prepares the export surface. PDF, PNG, AI Prompt, and JSON generation are implemented in Phase 7.</p>
-            <div className="output-grid">
-              <button type="button" className="output-action"><Download size={18} /> Download PDP as PDF</button>
-              <button type="button" className="output-action"><Download size={18} /> Download PDP as PNG</button>
-              <button type="button" className="output-action"><FileJson size={18} /> Export Project JSON</button>
-              <button type="button" className="output-action"><FileJson size={18} /> Import Project JSON</button>
+            <p>COMING IN NEXT ITERATION</p>
+            <div className="output-grid" aria-disabled="true">
+              <button type="button" className="output-action" disabled><Download size={18} /> Download PDP as PDF</button>
+              <button type="button" className="output-action" disabled><Download size={18} /> Download PDP as PNG</button>
+              <button type="button" className="output-action" disabled><FileJson size={18} /> Generate AI Product Page Prompt</button>
+              <button type="button" className="output-action" disabled><FileJson size={18} /> Export / Import Project JSON</button>
             </div>
           </section>
           <ProductDetailPage data={state} compact />

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { steps } from "../data/steps";
+import { donEspadinExample } from "../examples/donEspadin";
 import { clearProjectState, loadProjectState, saveProjectState } from "../lib/storage";
 import type { AppMode, ProductTreatmentState, StepId } from "../schemas/productState";
 import { initialState } from "./initialState";
@@ -40,6 +41,19 @@ export function useProductTreatment() {
     }));
   }
 
+  function loadDonEspadinExample() {
+    const nextState: ProductTreatmentState = {
+      ...donEspadinExample,
+      metadata: {
+        ...donEspadinExample.metadata,
+        updatedAt: new Date().toISOString(),
+      },
+    };
+    setState(nextState);
+    saveProjectState(nextState);
+    setLastSavedAt(new Date());
+  }
+
   function saveNow() {
     saveProjectState(state);
     setLastSavedAt(new Date());
@@ -62,6 +76,7 @@ export function useProductTreatment() {
     setMode,
     setStep,
     updateSection,
+    loadDonEspadinExample,
     saveNow,
     resetProject,
   };
