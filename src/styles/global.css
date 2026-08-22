@@ -697,3 +697,25 @@ section[id], div[id], .docroi-anchor-target { scroll-margin-top: 100px; }
     line-height: 1.65;
   }
 }
+
+/* Readiness complete state: avoid empty-looking panels when the example is ready. */
+.readiness-panel.complete {
+  border-color: #cfead6;
+  background: #fbfffc;
+}
+.readiness-complete {
+  background: #eff9f2;
+  border: 1px solid #cfead6;
+  border-radius: 8px;
+  color: #29583a;
+  padding: 14px 16px;
+}
+.readiness-complete strong {
+  color: #0f7a3a;
+  display: block;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+.readiness-complete p {
+  margin: 0;
+}

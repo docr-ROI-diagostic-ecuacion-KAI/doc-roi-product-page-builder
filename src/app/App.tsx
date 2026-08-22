@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { ClosingSections } from "../components/ClosingSections";
 import { ProductDetailPage } from "../components/ProductDetailPage";
 import { steps } from "../data/steps";
-import { buildAiPrompt, downloadPdpPdf, downloadPdpPng, sharePdpPdf } from "../exports/projectExports";
+import { buildAiPrompt, downloadPdpPdf, downloadPdpPng, sharePdpPng } from "../exports/projectExports";
 import { LearningFeed } from "../features/learning/LearningFeed";
 import { StepEditor } from "../features/treatment/StepEditor";
 import { StepNavigation } from "../features/treatment/StepNavigation";
@@ -64,10 +64,10 @@ export function App() {
     window.setTimeout(() => setPromptCopied(false), 1600);
   }
 
-  async function handleSharePdf() {
+  async function handleSharePng() {
     setShareStatus("preparing");
     try {
-      const result = await sharePdpPdf();
+      const result = await sharePdpPng();
       setShareStatus(result);
     } catch (error) {
       setShareStatus(error instanceof DOMException && error.name === "AbortError" ? "idle" : "error");
@@ -91,7 +91,7 @@ export function App() {
 
         {mode === "preview" && <main id="preview" className="preview-layout docroi-anchor-target"><ProductDetailPage data={state} mediaUrls={mediaUrls} /></main>}
 
-        {mode === "output" && <main id="output" className="output-layout docroi-anchor-target"><section className="output-panel"><h2>output center</h2><p>all outputs read the same canonical state used by preview.</p><div className="output-stack"><div className="output-group"><button type="button" className="output-action" onClick={downloadPdpPdf}><Download size={18} /><span>download pdp as pdf</span></button><button type="button" className="output-action" onClick={downloadPdpPng}><Download size={18} /><span>download pdp as png</span></button></div><div className="output-group"><button type="button" className="output-action" onClick={handleSharePdf} disabled={shareStatus === "preparing"}><Share2 size={18} /><span>{shareStatus === "preparing" ? "preparing pdf" : shareStatus === "shared" ? "shared" : shareStatus === "downloaded" ? "downloaded + link copied" : shareStatus === "error" ? "share failed" : "share pdp pdf"}</span></button></div><div className="output-group prompt-group"><button type="button" className="output-action" onClick={generatePrompt}><FileJson size={18} /><span>generate ai product page prompt</span></button><textarea className="prompt-output" value={promptText} onChange={(event) => setPrompt(event.target.value)} /><button type="button" className={promptCopied ? "copy-prompt-button copied" : "copy-prompt-button"} onClick={copyPrompt} aria-label="Copy prompt">{promptCopied ? <Check size={16} /> : <Copy size={16} />}<span>{promptCopied ? "copied" : "copy prompt"}</span></button></div></div></section><section><ProductDetailPage data={state} mediaUrls={mediaUrls} compact /><ReadinessPanel readiness={readiness} /></section></main>}
+        {mode === "output" && <main id="output" className="output-layout docroi-anchor-target"><section className="output-panel"><h2>output center</h2><p>all outputs read the same canonical state used by preview.</p><div className="output-stack"><div className="output-group"><button type="button" className="output-action" onClick={downloadPdpPdf}><Download size={18} /><span>download pdp as pdf</span></button><button type="button" className="output-action" onClick={downloadPdpPng}><Download size={18} /><span>download pdp as png</span></button></div><div className="output-group"><button type="button" className="output-action" onClick={handleSharePng} disabled={shareStatus === "preparing"}><Share2 size={18} /><span>{shareStatus === "preparing" ? "preparing png" : shareStatus === "shared" ? "shared" : shareStatus === "downloaded" ? "png downloaded" : shareStatus === "error" ? "share failed" : "share pdp png"}</span></button></div><div className="output-group prompt-group"><button type="button" className="output-action" onClick={generatePrompt}><FileJson size={18} /><span>generate ai product page prompt</span></button><textarea className="prompt-output" value={promptText} onChange={(event) => setPrompt(event.target.value)} /><button type="button" className={promptCopied ? "copy-prompt-button copied" : "copy-prompt-button"} onClick={copyPrompt} aria-label="Copy prompt">{promptCopied ? <Check size={16} /> : <Copy size={16} />}<span>{promptCopied ? "copied" : "copy prompt"}</span></button></div></div></section><section><ProductDetailPage data={state} mediaUrls={mediaUrls} compact /><ReadinessPanel readiness={readiness} /></section></main>}
       </section>
 
       <ClosingSections logoUrl={docRoiLogo} />
@@ -100,10 +100,13 @@ export function App() {
 }
 
 function ReadinessPanel({ readiness }: { readiness: ReturnType<typeof buildReadiness> }) {
-  return <section className="readiness-panel"><h2>pdp readiness</h2><div className="readiness-grid"><ReadinessColumn title="missing data" items={readiness.missing.map((item) => item.message)} /><ReadinessColumn title="warnings" items={readiness.warnings.map((item) => item.message)} /><ReadinessColumn title="pending" items={readiness.pending.map((item) => item.message)} /></div></section>;
+  const isComplete = readiness.issues.length === 0;
+  return <section className={isComplete ? "readiness-panel complete" : "readiness-panel"}><h2>pdp readiness</h2>{isComplete ? <div className="readiness-complete"><strong>Product sheet complete</strong><p>All required product, media, evidence, commerce, service and SEO/AIO fields are ready for this example.</p></div> : <div className="readiness-grid"><ReadinessColumn title="missing data" items={readiness.missing.map((item) => item.message)} /><ReadinessColumn title="warnings" items={readiness.warnings.map((item) => item.message)} /><ReadinessColumn title="pending" items={readiness.pending.map((item) => item.message)} /></div>}</section>;
 }
 
 function ReadinessColumn({ title, items }: { title: string; items: string[] }) { return <div><h3>{title}</h3>{items.length ? <ul>{items.map((item) => <li key={item}>{item}</li>)}</ul> : <p>no items.</p>}</div>; }
+
+
 
 
 

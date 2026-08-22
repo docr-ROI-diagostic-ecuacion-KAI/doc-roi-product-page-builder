@@ -13,23 +13,19 @@ export async function downloadPdpPdf() {
   pdf.save("doc-roi-pdp.pdf");
 }
 
-export async function sharePdpPdf(): Promise<"shared" | "downloaded"> {
-  const pdf = await buildPdpPdf();
-  const file = new File([pdf.output("blob")], "doc-roi-pdp.pdf", { type: "application/pdf" });
+export async function sharePdpPng(): Promise<"shared" | "downloaded"> {
+  const element = getPdpElement();
+  const canvas = await html2canvas(element, { scale: 2, useCORS: true, allowTaint: false, backgroundColor: "#ffffff" });
+  const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob((result) => result ? resolve(result) : reject(new Error("PNG export failed")), "image/png"));
+  const file = new File([blob], "doc-roi-pdp.png", { type: "image/png" });
   if (navigator.canShare?.({ files: [file] })) {
-    await navigator.share({ title: "DOC ROI PDP", text: "DOC ROI product detail page PDF", files: [file] });
-    return "shared";
-  }
-  if (navigator.share) {
-    await navigator.share({ title: "DOC ROI PDP", text: "DOC ROI product detail page PDF", url: window.location.href });
-    pdf.save("doc-roi-pdp.pdf");
+    await navigator.share({ title: "DOC ROI PDP", text: "DOC ROI product detail page PNG", files: [file] });
     return "shared";
   }
   await navigator.clipboard?.writeText(window.location.href).catch(() => undefined);
-  pdf.save("doc-roi-pdp.pdf");
+  downloadUrl(URL.createObjectURL(blob), "doc-roi-pdp.png");
   return "downloaded";
 }
-
 async function buildPdpPdf() {
   const element = getPdpElement();
   const canvas = await html2canvas(element, { scale: 2, useCORS: true, allowTaint: false, backgroundColor: "#ffffff" });
@@ -126,4 +122,6 @@ function downloadUrl(url: string, filename: string) {
   link.remove();
   if (url.startsWith("blob:")) window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
+
+
 
