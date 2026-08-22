@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, CheckCircle2, Download, Eye, FileJson, Hammer, RotateCcw, Save, Share2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, CheckCircle2, Copy, Download, Eye, FileJson, Hammer, RotateCcw, Save, Share2 } from "lucide-react";
 import type { ComponentType } from "react";
 import { useMemo, useState } from "react";
 import { ClosingSections } from "../components/ClosingSections";
@@ -36,6 +36,7 @@ export function App() {
     resetProject,
   } = useProductTreatment();
   const [prompt, setPrompt] = useState("");
+  const [promptCopied, setPromptCopied] = useState(false);
   const activeIndex = steps.findIndex((step) => step.id === currentStep.id);
   const readiness = buildReadiness(state);
   const promptText = useMemo(() => prompt || buildAiPrompt(state), [prompt, state]);
@@ -52,9 +53,14 @@ export function App() {
   }
 
   function generatePrompt() {
-    const nextPrompt = buildAiPrompt(state);
-    setPrompt(nextPrompt);
-    navigator.clipboard?.writeText(nextPrompt).catch(() => undefined);
+    setPrompt(buildAiPrompt(state));
+    setPromptCopied(false);
+  }
+
+  async function copyPrompt() {
+    await navigator.clipboard?.writeText(promptText);
+    setPromptCopied(true);
+    window.setTimeout(() => setPromptCopied(false), 1600);
   }
 
   return (
@@ -73,7 +79,7 @@ export function App() {
 
         {mode === "preview" && <main id="preview" className="preview-layout docroi-anchor-target"><ProductDetailPage data={state} mediaUrls={mediaUrls} /></main>}
 
-        {mode === "output" && <main id="output" className="output-layout docroi-anchor-target"><section className="output-panel"><h2>output center</h2><p>all outputs read the same canonical state used by preview.</p><div className="output-grid"><button type="button" className="output-action" onClick={downloadPdpPdf}><Download size={18} /><span>download pdp as pdf</span></button><button type="button" className="output-action" onClick={downloadPdpPng}><Download size={18} /><span>download pdp as png</span></button><button type="button" className="output-action" onClick={generatePrompt}><FileJson size={18} /><span>generate ai product page prompt</span></button><button type="button" className="output-action" onClick={sharePdpPdf}><Share2 size={18} /><span>share pdp pdf</span></button></div><textarea className="prompt-output" value={promptText} onChange={(event) => setPrompt(event.target.value)} /></section><section><ProductDetailPage data={state} mediaUrls={mediaUrls} compact /><ReadinessPanel readiness={readiness} /></section></main>}
+        {mode === "output" && <main id="output" className="output-layout docroi-anchor-target"><section className="output-panel"><h2>output center</h2><p>all outputs read the same canonical state used by preview.</p><div className="output-stack"><div className="output-group"><button type="button" className="output-action" onClick={downloadPdpPdf}><Download size={18} /><span>download pdp as pdf</span></button><button type="button" className="output-action" onClick={downloadPdpPng}><Download size={18} /><span>download pdp as png</span></button></div><div className="output-group"><button type="button" className="output-action" onClick={sharePdpPdf}><Share2 size={18} /><span>share pdp pdf</span></button></div><div className="output-group prompt-group"><button type="button" className="output-action" onClick={generatePrompt}><FileJson size={18} /><span>generate ai product page prompt</span></button><textarea className="prompt-output" value={promptText} onChange={(event) => setPrompt(event.target.value)} /><button type="button" className={promptCopied ? "copy-prompt-button copied" : "copy-prompt-button"} onClick={copyPrompt} aria-label="Copy prompt">{promptCopied ? <Check size={16} /> : <Copy size={16} />}<span>{promptCopied ? "copied" : "copy prompt"}</span></button></div></div></section><section><ProductDetailPage data={state} mediaUrls={mediaUrls} compact /><ReadinessPanel readiness={readiness} /></section></main>}
       </section>
 
       <ClosingSections logoUrl={docRoiLogo} />
@@ -86,6 +92,8 @@ function ReadinessPanel({ readiness }: { readiness: ReturnType<typeof buildReadi
 }
 
 function ReadinessColumn({ title, items }: { title: string; items: string[] }) { return <div><h3>{title}</h3>{items.length ? <ul>{items.map((item) => <li key={item}>{item}</li>)}</ul> : <p>no items.</p>}</div>; }
+
+
 
 
 
