@@ -6,8 +6,24 @@ import { clearProjectState, loadProjectState, saveProjectState } from "../lib/st
 import type { AppMode, ProductTreatmentState, StepId } from "../schemas/productState";
 import { initialState } from "./initialState";
 
+function normalizeLoadedState(loaded: ProductTreatmentState) {
+  if (!isLegacyDonEspadinExample(loaded)) return loaded;
+  return {
+    ...donEspadinExample,
+    metadata: {
+      ...donEspadinExample.metadata,
+      currentStep: loaded.metadata.currentStep,
+      updatedAt: new Date().toISOString(),
+    },
+  };
+}
+
+function isLegacyDonEspadinExample(state: ProductTreatmentState) {
+  const haystack = JSON.stringify({ brand: state.brand, product: state.product, identity: state.identity, catalogue: state.catalogue, seoAio: state.seoAio });
+  return (state.metadata.projectName.includes("Don Espad") || state.brand.brand.includes("Don Espad")) && (haystack.includes("Espadín") || haystack.includes("Presentar un mezcal") || haystack.includes("Compra online") || haystack.includes("PENDING") || state.brand.assets.brandLogo.includes("docroi.marketing/wp-content/uploads/2026/08/LNogo"));
+}
 export function useProductTreatment() {
-  const [state, setState] = useState<ProductTreatmentState>(() => loadProjectState() ?? initialState);
+  const [state, setState] = useState<ProductTreatmentState>(() => normalizeLoadedState(loadProjectState() ?? initialState));
   const [mode, setMode] = useState<AppMode>("build");
   const [isSaving, setIsSaving] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
@@ -66,9 +82,10 @@ export function useProductTreatment() {
   }
 
   function replaceState(nextState: ProductTreatmentState) {
+    const normalized = normalizeLoadedState(nextState);
     const hydrated = {
-      ...nextState,
-      metadata: { ...nextState.metadata, updatedAt: new Date().toISOString() },
+      ...normalized,
+      metadata: { ...normalized.metadata, updatedAt: new Date().toISOString() },
     };
     setState(hydrated);
     saveProjectState(hydrated);
@@ -124,3 +141,5 @@ export function useProductTreatment() {
     resetProject,
   };
 }
+
+

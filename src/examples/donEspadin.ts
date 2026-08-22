@@ -6,7 +6,7 @@ const cmsAssets = {
   detail: "/don-espadin/Detail_Calidad_Don_Es.png",
   ritual: "/don-espadin/Ritual_Deseo_Don_Es.png",
   packaging: "/don-espadin/Packeging_Confianza__Don_Es.png",
-  longLogo: "https://docroi.marketing/wp-content/uploads/2026/08/LNogo-Cuadrado.png",
+  longLogo: "/don-espadin/logo-cuadrado.png",
   labelLogo: "https://docroi.marketing/wp-content/uploads/2026/08/logo-etiqueta.png",
   profileLogo: "https://docroi.marketing/wp-content/uploads/2026/08/Logo_Perfil.png",
 };
@@ -181,4 +181,5 @@ export const donEspadinExample: ProductTreatmentState = {
   },
   status: { publishStatus: "PUBLISH_READY" },
 };
+
 

@@ -61,4 +61,4 @@ function MediaImage({ assetId, alt, mediaUrls, crop }: { assetId: string; alt: s
 function PdpSection({ title, children }: { title: string; children: ReactNode }) { return <section className="pdp-detail-section"><h2>{title}</h2>{children}</section>; }
 function getPrimaryCta(data: ProductTreatmentState) { if (data.inventory.stockStatus === "OUT_OF_STOCK") return { label: "Notify me", disabled: true }; if (data.inventory.stockStatus === "WAITLIST") return { label: "Join waitlist", disabled: false }; if (data.inventory.stockStatus === "PREORDER") return { label: "Preorder", disabled: false }; return { label: data.ctas.primary.label || "Buy now", disabled: !data.ctas.primary.enabled }; }
 function formatMoney(value: number, currency: string) { return new Intl.NumberFormat("en", { style: "currency", currency: currency || "EUR" }).format(value || 0); }
-function validUrl(value: string) { return value.startsWith("http://") || value.startsWith("https://") || value.startsWith("blob:"); }
+function validUrl(value: string) { return value.startsWith("/") || value.startsWith("http://") || value.startsWith("https://") || value.startsWith("blob:"); }
