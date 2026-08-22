@@ -2,10 +2,10 @@ import type { ProductTreatmentState } from "../schemas/productState";
 import { initialState } from "../state/initialState";
 
 const cmsAssets = {
-  hero: "https://docroi.marketing/wp-content/uploads/2026/08/Hero_Reconocimiento_Don_Es.png",
-  detail: "https://docroi.marketing/wp-content/uploads/2026/08/Detail_Calidad_Don_Es.png",
-  ritual: "https://docroi.marketing/wp-content/uploads/2026/08/Ritual_Deseo_Don_Es.png",
-  packaging: "https://docroi.marketing/wp-content/uploads/2026/08/Packeging_Confianza__Don_Es.png",
+  hero: "/don-espadin/Hero_Reconocimiento_Don_Es.png",
+  detail: "/don-espadin/Detail_Calidad_Don_Es.png",
+  ritual: "/don-espadin/Ritual_Deseo_Don_Es.png",
+  packaging: "/don-espadin/Packeging_Confianza__Don_Es.png",
   longLogo: "https://docroi.marketing/wp-content/uploads/2026/08/LNogo-Cuadrado.png",
   labelLogo: "https://docroi.marketing/wp-content/uploads/2026/08/logo-etiqueta.png",
   profileLogo: "https://docroi.marketing/wp-content/uploads/2026/08/Logo_Perfil.png",
@@ -63,10 +63,10 @@ export const donEspadinExample: ProductTreatmentState = {
     labels: "Mezcal, Espadín, Oaxaca, Don Espadín",
   },
   media: [
-    { ...initialState.media[0], sourceType: "remote", url: cmsAssets.hero, altText: "Don Espadín Mezcal Espadín hero product recognition image", approvalStatus: "SUPPLIER_EVIDENCE", usageRights: "CMS asset supplied by DOC ROI", isMain: true, order: 1 },
-    { ...initialState.media[1], sourceType: "remote", url: cmsAssets.detail, altText: "Don Espadín Mezcal Espadín material quality detail image", approvalStatus: "SUPPLIER_EVIDENCE", usageRights: "CMS asset supplied by DOC ROI", isMain: false, order: 2 },
-    { ...initialState.media[2], sourceType: "remote", url: cmsAssets.ritual, altText: "Don Espadín Mezcal Espadín ritual and use image", approvalStatus: "SUPPLIER_EVIDENCE", usageRights: "CMS asset supplied by DOC ROI", isMain: false, order: 3 },
-    { ...initialState.media[3], sourceType: "remote", url: cmsAssets.packaging, altText: "Don Espadín Mezcal Espadín packaging and trust image", approvalStatus: "SUPPLIER_EVIDENCE", usageRights: "CMS asset supplied by DOC ROI", isMain: false, order: 4 },
+    { ...initialState.media[0], sourceType: "remote", url: cmsAssets.hero, altText: "Don Espadín Mezcal Espadín hero product recognition image", approvalStatus: "SUPPLIER_EVIDENCE", usageRights: "Bundled DOC ROI product asset", isMain: true, order: 1 },
+    { ...initialState.media[1], sourceType: "remote", url: cmsAssets.detail, altText: "Don Espadín Mezcal Espadín material quality detail image", approvalStatus: "SUPPLIER_EVIDENCE", usageRights: "Bundled DOC ROI product asset", isMain: false, order: 2 },
+    { ...initialState.media[2], sourceType: "remote", url: cmsAssets.ritual, altText: "Don Espadín Mezcal Espadín ritual and use image", approvalStatus: "SUPPLIER_EVIDENCE", usageRights: "Bundled DOC ROI product asset", isMain: false, order: 3 },
+    { ...initialState.media[3], sourceType: "remote", url: cmsAssets.packaging, altText: "Don Espadín Mezcal Espadín packaging and trust image", approvalStatus: "SUPPLIER_EVIDENCE", usageRights: "Bundled DOC ROI product asset", isMain: false, order: 4 },
   ],
   benefits: [
     { id: "benefit-origin", feature: "Oaxaca origin", benefit: "Builds provenance and category confidence for the buyer.", evidence: "PENDING" },
@@ -75,7 +75,7 @@ export const donEspadinExample: ProductTreatmentState = {
   ],
   trust: [
     { id: "claim-origin", claim: "Origin: Oaxaca, México", owner: "PENDING", source: "PENDING", status: "PENDING", reviewDate: "PENDING", approvalStatus: "PENDING", market: "PENDING" },
-    { id: "claim-assets", claim: "Official product media supplied from DOC ROI CMS", owner: "DOC ROI", source: "CMS asset URLs", status: "SUPPLIER_EVIDENCE", reviewDate: "PENDING", approvalStatus: "SUPPLIER_EVIDENCE", market: "PENDING" },
+    { id: "claim-assets", claim: "Official product media bundled with the DOC ROI exercise", owner: "DOC ROI", source: "Bundled public asset paths", status: "SUPPLIER_EVIDENCE", reviewDate: "PENDING", approvalStatus: "SUPPLIER_EVIDENCE", market: "PENDING" },
   ],
   evidence: {
     trustBadges: "PENDING",
@@ -84,7 +84,7 @@ export const donEspadinExample: ProductTreatmentState = {
     certificate: "PENDING",
     laboratoryEvidence: "PENDING",
     guarantee: "PENDING",
-    supplierEvidence: "CMS assets supplied by DOC ROI",
+    supplierEvidence: "Bundled DOC ROI product assets",
     responsibleUse: "PENDING",
   },
   pricing: {

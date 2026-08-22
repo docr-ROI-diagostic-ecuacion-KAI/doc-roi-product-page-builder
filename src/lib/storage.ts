@@ -110,15 +110,29 @@ function normalizeMedia(media: ProductTreatmentState["media"] | undefined): Prod
   const source = media?.length ? media : initialState.media;
   return initialState.media.map((fallback, index) => {
     const saved = source[index] as Partial<MediaAsset> | undefined;
+    const url = normalizeAssetUrl(saved?.url ?? fallback.url);
     return {
       ...fallback,
       ...saved,
+      url,
       title: saved?.title ?? fallback.title,
       order: saved?.order ?? index + 1,
-      sourceType: saved?.sourceType ?? (saved?.url ? "remote" : saved?.blobKey ? "indexeddb" : "empty"),
+      sourceType: saved?.sourceType ?? (url ? "remote" : saved?.blobKey ? "indexeddb" : "empty"),
       crop: { ...fallback.crop, ...saved?.crop },
     };
   });
+}
+
+function normalizeAssetUrl(url: string | undefined) {
+  if (!url) return url;
+  const localAssets: Record<string, string> = {
+    Hero_Reconocimiento_Don_Es: "/don-espadin/Hero_Reconocimiento_Don_Es.png",
+    Detail_Calidad_Don_Es: "/don-espadin/Detail_Calidad_Don_Es.png",
+    Ritual_Deseo_Don_Es: "/don-espadin/Ritual_Deseo_Don_Es.png",
+    Packeging_Confianza__Don_Es: "/don-espadin/Packeging_Confianza__Don_Es.png",
+  };
+  const match = Object.entries(localAssets).find(([name]) => url.includes(name));
+  return match?.[1] ?? url;
 }
 
 function normalizeTrust(trust: ProductTreatmentState["trust"] | undefined): ProductTreatmentState["trust"] {
